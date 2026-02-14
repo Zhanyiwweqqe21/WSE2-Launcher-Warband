@@ -8,7 +8,7 @@ namespace WSE2_CLI_Options
         public bool IntroDisabled;
         public string Module;
         public string ConfigPath;
-        public List<string> AdditionalArgs = new List<string>()
+        public List<string> AdditionalArgs = new List<string>();
 
         public string RenderOptions()
         {
