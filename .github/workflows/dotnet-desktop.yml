@@ -1,0 +1,32 @@
+name: Build WSE2 Launcher
+
+on:
+  push:
+    branches: [ patch-1 ]  # 只在 patch-1 分支触发
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        ref: patch-1  # 拉取你的 patch-1 分支
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 6.0.x  # 根据你的项目调整 .NET 版本
+
+    - name: Restore dependencies
+      run: dotnet restore "WSE2 Launcher.sln"
+
+    - name: Build
+      run: dotnet build "WSE2 Launcher.sln" --configuration Release --no-restore
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: WSE2-Launcher
+        path: WSE2 Launcher/bin/Release/
+
