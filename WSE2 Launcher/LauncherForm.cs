@@ -121,7 +121,8 @@ namespace WSE2_Launcher
             CLI_Options options = new CLI_Options();
             options.Module = selected.Name;
             options.IntroDisabled = Settings.bDisableIntro.Get();
-
+            options.AdditionalArgs.Add("+load_plugin WSE2Auth.dll");
+            
             string cli_options = options.ToString();
 
             string bin_path = Path.Combine(WarbandPath, "mb_warband_wse2.exe");
