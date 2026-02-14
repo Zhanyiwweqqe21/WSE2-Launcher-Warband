@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using System.Collections.Generic;
 
 namespace WSE2_CLI_Options
 {
@@ -7,6 +8,7 @@ namespace WSE2_CLI_Options
         public bool IntroDisabled;
         public string Module;
         public string ConfigPath;
+        public List<string> AdditionalArgs = new List<string>()
 
         public string RenderOptions()
         {
@@ -27,6 +29,12 @@ namespace WSE2_CLI_Options
                 sb.Append(ConfigPath);
             }
 
+            foreach (var arg in AdditionalArgs)
+            {
+
+                sb.Append(" ");
+                sb.Append(arg);
+            }
             return sb.ToString();
         }
     }
