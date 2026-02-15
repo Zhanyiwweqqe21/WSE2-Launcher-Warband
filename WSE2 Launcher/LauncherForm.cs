@@ -111,24 +111,39 @@ namespace WSE2_Launcher
         {
             // Saves this module as the default module to launch
             ModuleEntry selected = (ModuleEntry)moduleSelectBox.SelectedItem;
+           if (selected == null)
+           {
+                  MessageBox.Show("请选择一个模块！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                      
+                 return;
+           }
 
             if (Settings.bDefaultModule.Get() != selected.ToString())
             {
                 Settings.bDefaultModule.Set(selected.ToString());
                 Settings.WriteSettings();
             }
-
             CLI_Options options = new CLI_Options();
             options.Module = selected.Name;
             options.IntroDisabled = Settings.bDisableIntro.Get();
             options.AdditionalArgs.Add("+load_plugin WSE2Auth.dll");
-            
             string cli_options = options.ToString();
+            string serverExpath = Path.Combine(WarbandPath, "PK1.3.3");
+            string server_arguments = $"-r PW.txt -m \"{selected.Name}\" {cli_options}";   
+            if (!File.Exists(serverExpath))
+            {
+                MessageBox.Show($"未找到PK1.3.3：{serverExPath}", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            Console.WriteLine("Excecuting server command: {0} {1}", serverExpath, server_arguments);
 
-            string bin_path = Path.Combine(WarbandPath, "mb_warband_wse2.exe");
-            Console.WriteLine("Excecuting command {0} {1}", bin_path, cli_options);
-
-            Process.Start(bin_path, cli_options);
+            Process.Start(new ProcessStartInfo{
+                    FileName = serverExePath,
+                    Arguments = server_arguments,
+                    WorkingDirectory = WarbandPath, 
+                    UseShellExecute = false,
+                    CreateNoWindow = false     
+            });
             Close();
         }
 
