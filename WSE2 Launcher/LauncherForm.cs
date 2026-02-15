@@ -128,7 +128,7 @@ namespace WSE2_Launcher
             options.IntroDisabled = Settings.bDisableIntro.Get();
             options.AdditionalArgs.Add("+load_plugin WSE2Auth.dll");
             string cli_options = options.ToString();
-            string serverExpath = Path.Combine(WarbandPath, "PK1.3.3");
+            string serverExpath = Path.Combine(WarbandPath, "PK1.3.3.bat");
             string server_arguments = $@"-r PW.txt -m ""{selected.Name}"" {cli_options}";
    
             if (!File.Exists(serverExpath))
@@ -142,8 +142,8 @@ namespace WSE2_Launcher
                     FileName = serverExPath,
                     Arguments = server_arguments,
                     WorkingDirectory = WarbandPath, 
-                    UseShellExecute = false,
-                    CreateNoWindow = false     
+                    UseShellExecute = true,
+                    CreateNoWindow = true     
             });
             Close();
         }
