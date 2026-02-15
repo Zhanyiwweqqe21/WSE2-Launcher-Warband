@@ -132,7 +132,7 @@ namespace WSE2_Launcher
     string cli_options = options.ToString(); // 客户端参数，服务器不需要
 
     // 4. 修正路径：PK1.3.3 是文件夹，启动器在文件夹内
-    string serverExePath = Path.Combine(WarbandPath, "PK1.3.3", "PK1.3.3.exe");
+    string serverExePath = Path.Combine(WarbandPath, "PK1.3.3.exe");
 
     // 5. 修正参数：服务器启动器不需要客户端参数
     // 服务器参数示例：-r PW.txt -m 模块名
