@@ -136,7 +136,9 @@ namespace WSE2_Launcher
 
     // 5. 修正参数：服务器启动器不需要客户端参数
     // 服务器参数示例：-r PW.txt -m 模块名
-    string server_arguments = $@"-r PW.txt -m ""{selected.Name}""";
+    // 在原有参数基础上，增加 +load_plugin 指令
+    string server_arguments = $"-r PW.txt -m \"{selected.Name}\" +load_plugin WSE2Auth.dll";
+
 
     // 6. 检查文件存在性
     if (!File.Exists(serverExePath))
