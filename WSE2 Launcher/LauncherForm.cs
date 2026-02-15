@@ -138,7 +138,7 @@ namespace WSE2_Launcher
             Console.WriteLine("Excecuting server command: {0} {1}", serverExpath, server_arguments);
 
             Process.Start(new ProcessStartInfo{
-                    FileName = serverExePath,
+                    FileName = serverExPath,
                     Arguments = server_arguments,
                     WorkingDirectory = WarbandPath, 
                     UseShellExecute = false,
