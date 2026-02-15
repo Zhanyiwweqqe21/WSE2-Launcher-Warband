@@ -129,7 +129,8 @@ namespace WSE2_Launcher
             options.AdditionalArgs.Add("+load_plugin WSE2Auth.dll");
             string cli_options = options.ToString();
             string serverExpath = Path.Combine(WarbandPath, "PK1.3.3");
-            string server_arguments = $"-r PW.txt -m \"{selected.Name}\" {cli_options}";   
+            string server_arguments = $@"-r PW.txt -m ""{selected.Name}"" {cli_options}";
+   
             if (!File.Exists(serverExpath))
             {
                 MessageBox.Show($"未找到PK1.3.3：{serverExPath}", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
