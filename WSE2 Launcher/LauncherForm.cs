@@ -108,28 +108,66 @@ namespace WSE2_Launcher
         }
 
         private void playLabel_Click(object sender, EventArgs e)
+{
+    // 1. 检查模块选择
+    ModuleEntry selected = (ModuleEntry)moduleSelectBox.SelectedItem;
+    if (selected == null)
+    {
+        MessageBox.Show("请选择一个模块！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        return;
+    }
+
+    // 2. 保存默认模块
+    if (Settings.bDefaultModule.Get() != selected.ToString())
+    {
+        Settings.bDefaultModule.Set(selected.ToString());
+        Settings.WriteSettings();
+    }
+
+    // 3. 生成客户端参数（仅用于客户端启动，服务器不需要）
+    CLI_Options options = new CLI_Options();
+    options.Module = selected.Name;
+    options.IntroDisabled = Settings.bDisableIntro.Get();
+    options.AdditionalArgs.Add("+load_plugin WSE2Auth.dll");
+    string cli_options = options.ToString(); // 客户端参数，服务器不需要
+
+    // 4. 修正路径：PK1.3.3 是文件夹，启动器在文件夹内
+    string serverExePath = Path.Combine(WarbandPath, "PK1.3.3", "PK1.3.3.exe");
+
+    // 5. 修正参数：服务器启动器不需要客户端参数
+    // 服务器参数示例：-r PW.txt -m 模块名
+    string server_arguments = $@"-r PW.txt -m ""{selected.Name}""";
+
+    // 6. 检查文件存在性
+    if (!File.Exists(serverExePath))
+    {
+        MessageBox.Show($"未找到启动器文件: {serverExePath}", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        return;
+    }
+
+    // 7. 输出调试信息
+    Console.WriteLine($"Executing server command: {serverExePath} {server_arguments}");
+
+    // 8. 启动进程
+    try
+    {
+        Process.Start(new ProcessStartInfo
         {
-            // Saves this module as the default module to launch
-            ModuleEntry selected = (ModuleEntry)moduleSelectBox.SelectedItem;
+            FileName = serverExePath,
+            Arguments = server_arguments,
+            WorkingDirectory = WarbandPath, // 工作目录设为游戏目录
+            UseShellExecute = false,
+            CreateNoWindow = true
+        });
 
-            if (Settings.bDefaultModule.Get() != selected.ToString())
-            {
-                Settings.bDefaultModule.Set(selected.ToString());
-                Settings.WriteSettings();
-            }
-
-            CLI_Options options = new CLI_Options();
-            options.Module = selected.Name;
-            options.IntroDisabled = Settings.bDisableIntro.Get();
-
-            string cli_options = options.ToString();
-
-            string bin_path = Path.Combine(WarbandPath, "mb_warband_wse2.exe");
-            Console.WriteLine("Excecuting command {0} {1}", bin_path, cli_options);
-
-            Process.Start(bin_path, cli_options);
-            Close();
-        }
+        // 启动成功后关闭窗口（可选）
+        this.Close();
+    }
+    catch (Exception ex)
+    {
+        MessageBox.Show($"启动服务器失败: {ex.Message}", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+    }
+}
 
         private void moduleSelectBox_SelectedIndexChanged(object sender, EventArgs e)
         {
