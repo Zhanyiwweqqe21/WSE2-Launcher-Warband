@@ -128,46 +128,40 @@ namespace WSE2_Launcher
     CLI_Options options = new CLI_Options();
     options.Module = selected.Name;
     options.IntroDisabled = Settings.bDisableIntro.Get();
-    options.AdditionalArgs.Add("+load_plugin WSE2Auth.dll");
-    string cli_options = options.ToString(); // 客户端参数，服务器不需要
+     options.AdditionalArgs.Add("+load_plugin WSE2Auth.dll");
+            string cli_options = options.ToString();
+            string serverExpath = Path.Combine(WarbandPath, "PK1.3.3");
+            string server_arguments = $"-r PW.txt -m \"{selected.Name}\" {cli_options}";   
+            string server_arguments = $@"-r PW.txt -m ""{selected.Name}"" {cli_options}";
+   
+            if (!File.Exists(serverExpath))
+            {
+                MessageBox.Show($"未找到PK1.3.3：{serverExPath}", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            Console.WriteLine("Excecuting server command: {0} {1}", serverExpath, server_arguments);
 
-    // 4. 修正路径：PK1.3.3 是文件夹，启动器在文件夹内
-    string serverExePath = Path.Combine(WarbandPath, "PK1.3.3.bat");
+            Process.Start(new ProcessStartInfo{
+                    FileName = serverExPath,
+                    Arguments = server_arguments,
+                    WorkingDirectory = WarbandPath, 
+                    UseShellExecute = false,
+                    CreateNoWindow = false     
+            });
+            Close();
+        }
 
-    // 5. 修正参数：服务器启动器不需要客户端参数
-    // 服务器参数示例：-r PW.txt -m 模块名
-    // 在原有参数基础上，增加 +load_plugin 指令
-    string server_arguments = $"-r PW.txt -m \"{selected.Name}\" +load_plugin WSE2Auth.dll";
-
-
-    // 6. 检查文件存在性
-    if (!File.Exists(serverExePath))
-    {
-        MessageBox.Show($"未找到启动器文件: {serverExePath}", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        return;
-    }
-
-    // 7. 输出调试信息
-    Console.WriteLine($"Executing server command: {serverExePath} {server_arguments}");
-
-    // 8. 启动进程
-    try
-    {
-        Process.Start(new ProcessStartInfo
+        private void moduleSelectBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            FileName = serverExePath,
-            Arguments = server_arguments,
-            WorkingDirectory = WarbandPath, // 工作目录设为游戏目录
-            UseShellExecute = true,
-            CreateNoWindow = true
-        });
+            // changes the image
+            ModuleEntry selected = (ModuleEntry)moduleSelectBox.SelectedItem;
+            modulePictureBox.Image = selected.GetBitmap();
+        }
 
-        // 启动成功后关闭窗口（可选）
-        this.Close();
-    }
-    catch (Exception ex)
-    {
-        MessageBox.Show($"启动服务器失败: {ex.Message}", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        private void LauncherForm_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }
 
